@@ -46,7 +46,7 @@ Create an `input/` directory in the same location as the Snakefile and place the
 input/
 ├── species1.fastq.gz
 ├── species2.fastq.gz
-├── ...
+└── ...
 ```
 
 Each file should be named after the sample/species (without the `.fastq.gz` extension), as this name is used throughout the pipeline.
