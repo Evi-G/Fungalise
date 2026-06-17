@@ -65,7 +65,7 @@ GENOME_SIZES = {
 }
 ```
 
-> **Important:** `SAMPLES` and `GENOME_SIZES` must be filled in manually before running the pipeline. Sample names in `SAMPLES` must exactly match the filenames in the `input/` folder (without `.fastq.gz).
+> **Important:** `SAMPLES` and `GENOME_SIZES` must be filled in manually before running the pipeline. Sample names in `SAMPLES` must exactly match the filenames in the `input/` folder (without `.fastq.gz`).
 > Genome sizes are used by Flye and should be provided in Flye's notation (e.g. `40m` for 40mb, `12.5m` for 12.5 Mb).
 
 Other parameters that can optionally be adjusted:
