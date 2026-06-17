@@ -114,7 +114,7 @@ Output/
 
 Key output files:
 - `output/nanoplot_raw/{sample}/NanoPlot-report.html` — raw read QC report
-- - `output/nanoplot_filtered/{sample}/NanoPlot-report.html` — filtered read QC report
+- `output/nanoplot_filtered/{sample}/NanoPlot-report.html` — filtered read QC report
 - `output/medaka_output/{sample}/assembly.fasta` — final polished assembly
 - `output/telovision_assembly/{sample}/{sample}.html` — telomere visualization
 - `output/busco_output/{sample}/{sample}/short_summary.specific.fungi_odb10.{sample}.txt` — BUSCO completeness summary
