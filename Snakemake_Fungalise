@@ -1,0 +1,94 @@
+SAMPLES = ["{species}", "species"]
+COVERAGE = 40 
+GENOME_SIZES = {"{species}": "{genome length}", "{species}": "{genome length}"}
+THREADS = 4
+
+
+rule all:
+    input:
+        expand("output/nanoplot_raw/{sample}/NanoPlot-report.html", sample=SAMPLES),
+        expand("output/nanoplot_filtered/{sample}/NanoPlot-report.html", sample=SAMPLES),
+        expand("output/telovision_assembly/{sample}/{sample}.html", sample=SAMPLES),
+        expand("output/telovision_assembly/{sample}/{sample}_info.tsv", sample=SAMPLES),
+        expand("output/busco_output/{sample}/{sample}/short_summary.specific.fungi_odb10.{sample}.txt", sample=SAMPLES)
+    
+
+rule nanoplot_raw:
+    input:
+        "input/{sample}.fastq.gz"
+    output:
+        "output/nanoplot_raw/{sample}/NanoPlot-report.html"
+    shell:
+        "NanoPlot --fastq {input} -o output/nanoplot_raw/{wildcards.sample}"
+
+rule porechop:
+    input:
+        "input/{sample}.fastq.gz"
+    output:
+        "output/porechop_output/{sample}/{sample}.adap.fastq.gz"
+    conda:
+        "porechop_env"
+    shell:
+        "porechop_abi -i {input} -o {output}"
+
+rule filtlong:
+    input:
+        "output/porechop_output/{sample}/{sample}.adap.fastq.gz"
+    output:
+        "output/filtlong_output/{sample}/{sample}.adap.filt.fastq.gz"
+    shell:
+        "filtlong --min_length 1000 --keep_percent 90 {input} | gzip > {output}"
+
+rule nanoplot_filtered:
+    input:
+        "output/filtlong_output/{sample}/{sample}.adap.filt.fastq.gz"
+    output:
+        "output/nanoplot_filtered/{sample}/NanoPlot-report.html"
+    shell:
+        "NanoPlot --fastq {input} -o output/nanoplot_filtered/{wildcards.sample}"
+
+rule flye:
+    input:
+        "output/filtlong_output/{sample}/{sample}.adap.filt.fastq.gz"
+    output:
+        "output/flye_output/{sample}/assembly.fasta"
+    threads: THREADS
+    params:
+        genome_size = lambda wildcards: GENOME_SIZES[wildcards.sample], 
+        coverage = COVERAGE
+    shell:
+        "flye --scaffold --nano-hq {input} "
+        "--out-dir output/flye_output/{wildcards.sample} "
+        "--threads {threads} "
+        "--iterations 1 "
+        "--asm-coverage {params.coverage} "
+        "--genome-size {params.genome_size}"
+
+rule medaka:
+    input:
+        reads = "output/filtlong_output/{sample}/{sample}.adap.filt.fastq.gz",
+        assembly = "output/flye_output/{sample}/assembly.fasta"
+    output:
+        "output/medaka_output/{sample}/assembly.fasta"
+    threads: THREADS
+    shell:
+        "medaka_consensus -i {input.reads} -d {input.assembly} " "-o output/medaka_output/{wildcards.sample} -t {threads} && " "mv output/medaka_output/{wildcards.sample}/consensus.fasta {output}"
+
+rule telovision:
+    input:
+        "output/medaka_output/{sample}/assembly.fasta"
+    output:
+        html = "output/telovision_assembly/{sample}/{sample}.html",
+        tsv = "output/telovision_assembly/{sample}/{sample}_info.tsv"
+    shell:
+        "telovision -i {input} -o output/telovision_assembly/{wildcards.sample}/{wildcards.sample} --sorted"
+
+rule busco:
+    input:
+        "output/medaka_output/{sample}/assembly.fasta"
+    output:
+        "output/busco_output/{sample}/{sample}/short_summary.specific.fungi_odb10.{sample}.txt"
+    conda:
+        "busco_env"
+    shell:
+        "busco -i {input} -l fungi_odb10 -o {wildcards.sample} --out_path output/busco_output/{wildcards.sample} -m genome -f"
