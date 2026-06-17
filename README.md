@@ -122,4 +122,5 @@ Key output files:
 ## Author
 
 Evi van Gorp - Avans University of Applied Sciences, School of Life Sciences and Technology
+
 [LinkedIn](https://www.linkedin.com/in/evi-van-gorp-719543326/)
