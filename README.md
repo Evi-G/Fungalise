@@ -1,6 +1,6 @@
-# Fungalise
+# Fungalyse
 
-**Fungalise** is an automated Snakemake-based pipeline for de novo assembly, polishing, and quality evaluation of fungal Oxford Nanopore Technology (ONT) sequencing data.
+**Fungalyse** is an automated Snakemake-based pipeline for de novo assembly, polishing, and quality evaluation of fungal Oxford Nanopore Technology (ONT) sequencing data.
 
 The pipeline integrates quality control, adapter trimming, read filtering, genome assembly, polishing, telomere visualisation, and assembly completeness assessment into a single reproducible workflow.
 
@@ -80,13 +80,13 @@ THREADS = 4      # Number of threads per rule
 Run the pipeline from the directory containing the Snakefile:
 
 ```bash
-snakemake --snakefile Snakemake_Fungalise --use-conda --cores 4
+snakemake --snakefile Snakemake_Fungalyse --use-conda --cores 4
 ```
 
 To do a dry run first (recommended):
 
 ```bash
-snakemake --snakefile Snakemake_Fungalise --use-conda --cores 4 --dryrun
+snakemake --snakefile Snakemake_Fungalyse --use-conda --cores 4 --dryrun
 ```
 
 If you encounter a lock error:
