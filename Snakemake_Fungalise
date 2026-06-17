@@ -1,6 +1,6 @@
-SAMPLES = ["{species}", "species"]
+SAMPLES = ["species1", "species2"]
 COVERAGE = 40 
-GENOME_SIZES = {"{species}": "{genome length}", "{species}": "{genome length}"}
+GENOME_SIZES = {"species1": "40m", "species2": "12m"}
 THREADS = 4
 
 
